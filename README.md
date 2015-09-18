@@ -6,16 +6,16 @@ ActiveRecord pattern O/R mapper for python
 Johnnie Runner is SQLAlchemy Wrapper for Active Record pattern O/R Mapper
 
 
-### Depedencies
-* python2.7 or later
+## Depedencies
+* Python2.7 or Later
 
-### Goal
+## Goal
 * add Rails ActiveRecord Api
 * Database Migration
 
 ### TODO
-* [] Table RelationShips
-* [] Database Migration
+- [ ] Table RelationShips
+- [ ] Database Migration
 
 ### License
 * MIT
