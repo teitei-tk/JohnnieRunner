@@ -3,7 +3,7 @@ Johnnie Runner is SQLAlchemy Wrapper for Active Record pattern O/R Mapper
 
 ---
 
-## Depedencies
+## Dependencies
 * Python2.7 or Later
 * SQLAlchemy >= 1.0.0
 * MySQL
