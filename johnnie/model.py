@@ -1,8 +1,9 @@
 #-*- coding: utf-8 -*-
 
+import re
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm.util import object_state
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.ext.declarative import declarative_base, declared_attr
 
 from .exception import OperationException
 
@@ -19,6 +20,10 @@ class AbstractModel(DeclarativeBase):
 
     class Meta:
         session = None
+
+    @declared_attr
+    def __tablename__(cls):
+        return re.sub('(?!^)([A-Z]+)', r'_\1', cls.__name__).lower().__str__()
 
     @property
     def state(self):
