@@ -13,16 +13,12 @@ DeclarativeBase = declarative_base()
 
 class AbstractModel(DeclarativeBase):
     __abstract__ = True
+    __table_args__ = {'mysql_engine': 'InnoDB'}
+
+    as_scoped_session = True
 
     class Meta:
         session = None
-        as_scoped_session = True
-
-        @property
-        def is_scoped_session(cls):
-            if not getattr(cls.Meta, 'as_scoped'):
-                return False
-            return bool(cls.Meta.as_scoped)
 
     @property
     def state(self):
@@ -46,7 +42,7 @@ class AbstractModel(DeclarativeBase):
 
     @classmethod
     def get_session(cls):
-        if cls.Meta.is_scoped_session:
+        if cls.as_scoped_session:
             Session = scoped_session(cls.Meta.session)
             return Session()
         return cls.Meta.session()
@@ -70,6 +66,11 @@ class AbstractModel(DeclarativeBase):
     @classmethod
     def new(cls, **kwargs):
         return cls(**kwargs)
+
+    def apply_from_dict(self, data):
+        for k, v in data.items():
+            setattr(self, k, v)
+        return self
 
     @classmethod
     def get(cls, id):
@@ -181,9 +182,4 @@ class AbstractModel(DeclarativeBase):
         return cls.session().rollback()
 
     def set_session_as_scoped(self, as_scoped):
-        self.Meta.as_scoped_session = bool(as_scoped)
-
-    def apply_from_dict(self, data):
-        for k, v in data.items():
-            setattr(self, k, v)
-        return self
+        self.as_scoped_session = bool(as_scoped)

@@ -1,12 +1,12 @@
 # JohnnieRunner
-Johnnie Runner is SQLAlchemy Wrapper for Active Record pattern O/R Mapper
+JohnnieRunner is SQLAlchemy Wrapper for Active Record pattern O/R Mapper
 
 ---
 
 ## Dependencies
 * Python2.7 or Later
 * SQLAlchemy >= 1.0.0
-* MySQL
+* MySQL-python >= 1.2.5
 
 ## Goal
 * add Rails ActiveRecord Api
