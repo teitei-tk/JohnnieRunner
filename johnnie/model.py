@@ -65,12 +65,8 @@ class AbstractModel(DeclarativeBase):
         return cls.get_query(cls)
 
     @classmethod
-    def create(cls, data):
-        return cls.new(**data)
-
-    @classmethod
-    def new(cls, **kwargs):
-        return cls(**kwargs)
+    def new(cls, data):
+        return cls(**data)
 
     def apply_from_dict(self, data):
         for k, v in data.items():
@@ -127,7 +123,7 @@ class AbstractModel(DeclarativeBase):
         except Exception, err:
             raise OperationException(err.message)
         finally:
-            session.close()
+            session.expunge_all()
         return True
 
     @classmethod
@@ -141,21 +137,22 @@ class AbstractModel(DeclarativeBase):
             cls.rollback()
             raise OperationException(err.message)
         finally:
-            session.close()
+            session.expunge_all()
 
     def update(self, with_commit=True):
         if with_commit:
             session = self.session()
+            object_session = session.object_session(self)
             try:
-                session.commit()
+                object_session.commit()
             except Exception, err:
                 session.rollback()
                 raise OperationException(err.message)
             finally:
-                session.close()
+                session.expunge_all()
         return True
 
-    def delete(self, with_flush=True):
+    def delete(self, with_commit=True):
         session = self.session()
         try:
             object_session = session.object_session(self)
@@ -167,14 +164,14 @@ class AbstractModel(DeclarativeBase):
             elif self.is_deleted:
                 return False
 
-            if with_flush and self.is_persistent:
+            if with_commit and self.is_persistent:
                 object_session.delete(self)
-                object_session.flush()
+                object_session.commit()
         except Exception, err:
             session.rollback()
             raise OperationException(err.message)
         finally:
-            session.close()
+            session.expunge_all()
         return True
 
     def save(self, with_commit=True):
@@ -188,3 +185,7 @@ class AbstractModel(DeclarativeBase):
 
     def set_session_as_scoped(self, as_scoped):
         self.as_scoped_session = bool(as_scoped)
+
+    @classmethod
+    def get_session_engine(cls):
+        return cls.Meta.session.__dict__['kw']['bind']
