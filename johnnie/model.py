@@ -18,6 +18,12 @@ class AbstractModel(DeclarativeBase):
         session = None
         as_scoped_session = True
 
+        @property
+        def is_scoped_session(cls):
+            if not getattr(cls.Meta, 'as_scoped'):
+                return False
+            return bool(cls.Meta.as_scoped)
+
     @property
     def state(self):
         return object_state(self)
@@ -40,7 +46,7 @@ class AbstractModel(DeclarativeBase):
 
     @classmethod
     def get_session(cls):
-        if cls.Meta.as_scoped_session:
+        if cls.Meta.is_scoped_session:
             Session = scoped_session(cls.Meta.session)
             return Session()
         return cls.Meta.session()
@@ -107,49 +113,62 @@ class AbstractModel(DeclarativeBase):
             raise OperationException(err.message)
 
     def insert(self, with_commit=True):
+        session = self.session()
         try:
-            session = self.session()
             session.add(self)
             if with_commit:
                 session.commit()
         except Exception, err:
             raise OperationException(err.message)
+        finally:
+            session.close()
         return True
 
     @classmethod
     def insert_all(cls, entities, with_commit=True):
+        session = cls.session()
         try:
-            session = cls.session()
             session.bulk_save_objects(entities)
             if with_commit:
                 session.commit()
         except Exception, err:
             cls.rollback()
             raise OperationException(err.message)
+        finally:
+            session.close()
 
     def update(self, with_commit=True):
         if with_commit:
+            session = self.session()
             try:
-                self.session().commit()
+                session.commit()
             except Exception, err:
+                session.rollback()
                 raise OperationException(err.message)
+            finally:
+                session.close()
         return True
 
     def delete(self, with_flush=True):
+        session = self.session()
         try:
-            session = self.session()
+            object_session = session.object_session(self)
             if self.is_transient:
                 return True
             elif self.is_pending:
-                session.delete(self)
+                object_session.delete(self)
                 return True
+            elif self.is_deleted:
+                return False
 
-            if with_flush:
-                if self.is_persistent:
-                    session.delete(self)
-                    session.flush()
+            if with_flush and self.is_persistent:
+                object_session.delete(self)
+                object_session.flush()
         except Exception, err:
+            session.rollback()
             raise OperationException(err.message)
+        finally:
+            session.close()
         return True
 
     def save(self, with_commit=True):

@@ -15,7 +15,8 @@ Johnnie Runner is SQLAlchemy Wrapper for Active Record pattern O/R Mapper
 
 ## TODO
 - [ ] Add DB Data Types
-- [ ] Table RelationShips
+- [ ] Easy generate table index
+- [ ] Easy Table RelationShips
 - [ ] Database Migration
 - [ ] RDBMS Support other than MySQL
 
