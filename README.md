@@ -5,7 +5,6 @@ JohnnieRunner is SQLAlchemy Wrapper for Active Record pattern O/R Mapper
 * Python2.7 or Later
 * SQLAlchemy >= 1.0.8
 * MySQL-Python >= 1.2.5
-* wheel >= 0.25.0
 
 ## Support RDBMS
 * MySQL

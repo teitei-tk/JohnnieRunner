@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-"""
 JohnnieRunner
 =============
 
@@ -79,7 +77,7 @@ Example
        >>> from hoge import Repositories
        >>> entity = Repositories(name="JohnnieRunner", author="teitei-tk", url="https://github.com/teitei-tk/JohnnieRunner")
 
-       or
+       or 
 
        >>> entity_data = {"name": "JohnnieRunner", "author": "teitei-tk", "url": "https://github.com/teitei-tk/JohnnieRunner"}
        >>> entity = Repositories.new(entity_data)
@@ -100,7 +98,7 @@ Example
        |  1 | JohnnieRunner | teitei-tk | https://github.com/teitei-tk/JohnnieRunner |
        +----+---------------+-----------+--------------------------------------------+
        1 row in set (0.00 sec)
-       mysql>
+       mysql> 
 
 3. read record
 
@@ -108,7 +106,7 @@ Example
 
        >>> entity = Repositories.get(1)
 
-       or
+       or 
 
        >>> entity = Repositories.find(1)
 
@@ -162,45 +160,3 @@ License
 -------
 
 -  MIT
-"""
-
-try:
-    import setuptools
-    from setuptools import setup, find_packages
-except ImportError:
-    import sys
-    print("Please install setuptools.")
-    sys.exit(1)
-
-import version
-
-
-classifiers = [
-    'Development Status :: 3 - Alpha',
-    'License :: OSI Approved :: MIT License',
-    'Programming Language :: Python',
-    'Programming Language :: Python :: 2.6',
-    'Programming Language :: Python :: 2.7',
-    'Programming Language :: Python :: 3',
-    'Topic :: Software Development',
-    'Topic :: Database',
-    'Topic :: Database :: Front-Ends',
-    'Topic :: Software Development :: Libraries',
-]
-
-setup(
-    name='JohnnieRunner',
-    version=version.VERSION,
-    description='JohnnieRunner is SQLAlchemy Wrapper for Active Record pattern O/R Mapper',
-    long_description=__doc__,
-    author='teitei-tk',
-    author_email='teitei.tk@gmail.com',
-    url='https://github.com/teitei-tk/JohnnieRunner',
-    packages=find_packages(),
-    include_package_data=True,
-    license='MIT',
-    classifiers=classifiers,
-    install_requires=open('requirements.txt').read().splitlines(),
-    keywords=['orm', 'ormapper', 'o/r mapper', 'ActiveRecord', 'SQLAlchemy'],
-    download_url='https://github.com/teitei-tk/JohnnieRunner/archive/master.tar.gz'
-)
